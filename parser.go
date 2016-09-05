@@ -34,10 +34,10 @@ func formatText(i int, s *goquery.Selection) {
 }
 
 func getImage(baseURL string, s *goquery.Selection) string {
-	imageAnchor, exists := s.Find("a").Attr("href")
-	i, _ := s.Find("a").Attr("title")
-	if !exists || i == "no image" {
+	anchor := s.Find("a")
+	imageLink, exists := anchor.Attr("href")
+	if !exists {
 		return "No Image Found."
 	}
-	return baseURL + imageAnchor
+	return baseURL + imageLink
 }
