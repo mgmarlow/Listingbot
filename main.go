@@ -12,7 +12,7 @@ var (
 )
 
 func main() {
-	api := slack.New(GetToken())
+	api := slack.New(GetToken()) // Substitute with bot token
 
 	oneDayAgo := time.Now().AddDate(0, 0, -1)
 	entries, err := GetEntriesAfterDate(apartmentsURL, oneDayAgo)
