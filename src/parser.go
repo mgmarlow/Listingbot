@@ -1,22 +1,16 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
 )
 
-// ExtractHTML Reads row content from CL.
-func ExtractHTML(url string) {
-	doc, err := goquery.NewDocument(url)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Get each CL entry
-	doc.Find(".row").Each(formatText)
+// Listing holds apartment listing data
+type Listing struct {
+	Desc  string
+	Price string
+	Link  string
 }
 
 // GetEntriesAfterDate returns entry descriptions that fall before a given date
@@ -29,6 +23,7 @@ func GetEntriesAfterDate(url string, endDate time.Time) (string, error) {
 
 	doc.Find(".row").Each(func(i int, s *goquery.Selection) {
 		dt, _ := s.Find(".txt time").Attr("datetime")
+		currentListing := createListing(s)
 
 		// Parse CL datetime:
 		format := "2006-01-02 15:04"
@@ -36,20 +31,11 @@ func GetEntriesAfterDate(url string, endDate time.Time) (string, error) {
 		today := time.Now()
 
 		if InTimeSpan(endDate, today, date) {
-			result += getDesc(s) + "\n\n"
+			result += getDesc(currentListing) + "\n\n"
 		}
 	})
 
 	return result, nil
-}
-
-func formatText(i int, s *goquery.Selection) {
-	// Posted Date
-	postTime, _ := s.Find(".txt time").Attr("datetime")
-	fmt.Println("\n" + postTime)
-
-	// Extract description and price
-	fmt.Println(getDesc(s))
 }
 
 func getImage(baseURL string, s *goquery.Selection) string {
@@ -61,9 +47,17 @@ func getImage(baseURL string, s *goquery.Selection) string {
 	return baseURL + imageLink
 }
 
-func getDesc(s *goquery.Selection) string {
-	rowDesc := s.Find(".txt .hdrlnk").Text()
-	rowPrice := s.Find(".txt .price").Text()
-	imageAnchor := getImage("http://slo.craiglist.org", s)
-	return "Descr: " + rowDesc + " | Price: " + rowPrice + "\nListing: " + imageAnchor
+func createListing(s *goquery.Selection) Listing {
+	newListing := Listing{
+		Desc:  s.Find(".txt .hdrlnk").Text(),
+		Price: s.Find(".txt .price").Text(),
+		Link:  getImage("http://slo.craiglist.org", s),
+	}
+	return newListing
+}
+
+func getDesc(listing Listing) string {
+	return ("Descr: " + listing.Desc +
+		" | Price: " + listing.Price +
+		"\nListing: " + listing.Link)
 }
