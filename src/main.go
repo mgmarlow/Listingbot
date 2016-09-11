@@ -8,10 +8,6 @@ import (
 	"github.com/nlopes/slack"
 )
 
-var (
-	apartmentsURL = "http://slo.craiglist.org/search/apa"
-)
-
 func main() {
 	api := slack.New(GetToken()) // Substitute with bot token
 	params := slack.PostMessageParameters{}
@@ -19,7 +15,7 @@ func main() {
 	params.Username = "listingbot"
 
 	oneDayAgo := time.Now().AddDate(0, 0, -1)
-	entries, err := GetFilteredListings(apartmentsURL, oneDayAgo, 1200)
+	entries, err := GetFilteredListings(ApaDest{City: "slo"}, oneDayAgo, 1200)
 	if err != nil {
 		log.Fatal("Could not fetch entries.")
 	}

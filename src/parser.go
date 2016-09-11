@@ -1,10 +1,14 @@
 package main
 
 import (
-	"log"
 	"strconv"
 	"time"
 )
+
+// ApaDest Holds the Craigs List URL
+type ApaDest struct {
+	City string
+}
 
 // FilterParams are parameters to filter results by
 type FilterParams struct {
@@ -15,7 +19,8 @@ type FilterParams struct {
 
 // GetFilteredListings filters listings with filter params
 // TODO: Replace filters with FetchParams
-func GetFilteredListings(url string, minDate time.Time, maxPrice int) (string, error) {
+func GetFilteredListings(urlDest ApaDest, minDate time.Time, maxPrice int) (string, error) {
+	url := urlDest.parseURL()
 	var result string
 	listings, err := GetListingsAfterDate(url, minDate)
 	if err != nil {
@@ -32,15 +37,15 @@ func GetFilteredListings(url string, minDate time.Time, maxPrice int) (string, e
 }
 
 func (listing Listing) withinBudget(price int) bool {
-	listingPrice, err := strconv.Atoi(listing.Price[1:])
-	if err != nil {
-		log.Fatal("ERror converting price to integer.")
-	}
-	return listingPrice < price
+	return listing.Price < price
 }
 
 func getDesc(listing Listing) string {
 	return ("Descr: " + listing.Desc +
-		" | Price: " + listing.Price +
+		" | Price: " + strconv.Itoa(listing.Price) +
 		"\nListing: " + listing.Link)
+}
+
+func (urlDest ApaDest) parseURL() string {
+	return "http://" + urlDest.City + ".craiglist.org/search/apa"
 }

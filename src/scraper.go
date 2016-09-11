@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log"
+	"strconv"
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
@@ -10,7 +12,7 @@ import (
 type Listing struct {
 	Date  time.Time
 	Desc  string
-	Price string
+	Price int
 	Link  string
 }
 
@@ -52,10 +54,14 @@ func getImage(baseURL string, s *goquery.Selection) string {
 }
 
 func createListing(s *goquery.Selection, date time.Time) Listing {
+	price, err := strconv.Atoi(s.Find(".txt .price").Text()[1:])
+	if err != nil {
+		log.Fatal("Problem reading price.")
+	}
 	return Listing{
 		Date:  date,
 		Desc:  s.Find(".txt .hdrlnk").Text(),
-		Price: s.Find(".txt .price").Text(),
+		Price: price,
 		Link:  getImage("http://slo.craiglist.org", s),
 	}
 }
