@@ -14,8 +14,9 @@ func main() {
 	params.AsUser = true
 	params.Username = "listingbot"
 
-	oneDayAgo := time.Now().AddDate(0, 0, -1)
-	entries, err := GetFilteredListings(ApaDest{City: "slo"}, oneDayAgo, 1200)
+	filters := ReadSettingsFromFile("../settings.json")
+	filters.RecentDate = time.Now().AddDate(0, 0, -filters.DaysPast)
+	entries, err := GetFilteredListings(filters)
 	if err != nil {
 		log.Fatal("Could not fetch entries.")
 	}
