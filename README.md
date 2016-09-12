@@ -3,3 +3,15 @@
 An application that posts apartment listings to a Slack channel.
 
 ## Usage
+Create a `settings.json` file and drop it in the same directory as the executable. The contents of the file should look like:
+
+```
+{
+    "slackToken": "my-slack-token",
+    "city": "my-craigslist-city-url",
+    "daysPast": <how many days to search, 1 = current day>,
+    "price": <max-pricepoint>
+}
+```
+
+You can run the `run.sh` shell script to compile and run the executable. This process assumes you have go installed.
