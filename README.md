@@ -9,8 +9,19 @@ Create a `settings.json` file and drop it in the same directory as the executabl
 {
     "slackToken": "my-slack-token",
     "city": "my-craigslist-city-url",
-    "daysPast": <how many days to search, 1 = current day>,
+    "daysPast": <how many days to search>,
     "price": <max-pricepoint>
+}
+```
+
+For example:
+
+```
+{
+    "slackToken": "my-slack-token",
+    "city": "santabarbara",
+    "daysPast": 3,
+    "price": 950
 }
 ```
 
