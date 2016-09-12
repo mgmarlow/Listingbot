@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"log"
 	"os"
 	"strconv"
 	"time"
@@ -10,6 +9,7 @@ import (
 
 // FilterParams are parameters to filter results by
 type FilterParams struct {
+	Token      string    `json:"slackToken"`
 	City       string    `json:"city"`
 	RecentDate time.Time `json:"recentDate"`
 	DaysPast   int       `json:"daysPast"`
@@ -18,20 +18,20 @@ type FilterParams struct {
 }
 
 // ReadSettingsFromFile fetches JSON settings data
-func ReadSettingsFromFile(fileName string) FilterParams {
+func ReadSettingsFromFile(fileName string) (FilterParams, error) {
 	var filters FilterParams
 	configFile, err := os.Open(fileName)
 	if err != nil {
-		log.Fatal("Error reading settings file.", err.Error())
+		return FilterParams{}, err
 	}
 
 	jsonParser := json.NewDecoder(configFile)
 	err = jsonParser.Decode(&filters)
 	if err != nil {
-		log.Fatal("Error parsing JSON.", err.Error())
+		return FilterParams{}, err
 	}
 
-	return filters
+	return filters, nil
 }
 
 // GetFilteredListings filters listings with filter params

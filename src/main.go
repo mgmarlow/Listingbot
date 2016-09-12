@@ -9,14 +9,18 @@ import (
 )
 
 func main() {
-	api := slack.New(GetToken()) // Substitute with bot token
+	config, err := ReadSettingsFromFile("settings.json")
+	if err != nil {
+		log.Fatal("Error reading settings file.", err.Error())
+	}
+
+	api := slack.New(config.Token) // Substitute with bot token
 	params := slack.PostMessageParameters{}
 	params.AsUser = true
 	params.Username = "listingbot"
 
-	filters := ReadSettingsFromFile("../settings.json")
-	filters.RecentDate = time.Now().AddDate(0, 0, -filters.DaysPast)
-	entries, err := GetFilteredListings(filters)
+	config.RecentDate = time.Now().AddDate(0, 0, -config.DaysPast)
+	entries, err := GetFilteredListings(config)
 	if err != nil {
 		log.Fatal("Could not fetch entries.")
 	}
