@@ -1,6 +1,6 @@
-## ApartmentScraper
+## Listingbot
 
-An application that posts apartment listings to a Slack channel.
+A Slack bot that posts new apartment listings from craigslist to a channel.
 
 ## Usage
 Create a `settings.json` file and drop it in the same directory as the executable. The contents of the file should look like:
